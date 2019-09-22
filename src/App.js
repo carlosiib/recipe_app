@@ -10,48 +10,58 @@ const App= () => {
   //state
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('chicken');
 
   //funcion que se inicializa cuando se hace un re-render
   useEffect(()=>{
     getRecipes();
-  },[]);
+  },[query]);
   
   //fetch recipes
   const getRecipes = async () =>{
-    const response = await fetch(`https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}`);
+    const response = await fetch(`https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}`);
     const data = await response.json();
     setRecipes(data.hits);
   };
 
-  //input search
+  //search
   const updateSearch = e =>{
-    //value of the input
-    setSearch(e.target.value);
+    setSearch(e.target.value); //value of the input
+  }
+  
+  //input search
+  const getSearch = e =>{
+    e.preventDefault(); //disable auto reloading
+    setQuery(search);
+    setSearch('');
+
   }
 
   return (
     <div className="App">
-      <form className="search-form">
-        <input 
-          className="search-bar" 
-          type="text"
-          //ingreso de datos en input
-          value={search}
-          //metodo para poder buscar
-          onChange={updateSearch}
-          />
-        <button 
-          className="search-button" 
-          type="submit">Buscar
-        </button>
-       
+      <form 
+        className="search-form"
+        onSubmit={getSearch}>
+          <input 
+            className="search-bar" 
+            type="text"
+            //ingreso de datos en input
+            value={search}
+            //metodo para poder buscar
+            onChange={updateSearch}
+            />
+          <button 
+            className="search-button" 
+            type="submit">Buscar
+          </button> 
       </form>
       {recipes.map(recipe =>(
         <Recipe
         key={recipe.recipe.label}
         title={recipe.recipe.label}
         calories={recipe.recipe.calories}
-        image={recipe.recipe.image}/>
+        image={recipe.recipe.image}
+        ingredients={recipe.recipe.ingredients}/>
       ))}
     </div>
   );
