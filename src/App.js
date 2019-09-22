@@ -9,6 +9,7 @@ const App= () => {
   
   //state
   const [recipes, setRecipes] = useState([]);
+  const [search, setSearch] = useState('');
 
   //funcion que se inicializa cuando se hace un re-render
   useEffect(()=>{
@@ -20,6 +21,12 @@ const App= () => {
     const response = await fetch(`https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}`);
     const data = await response.json();
     setRecipes(data.hits);
+  };
+
+  //input search
+  const updateSearch = e =>{
+    //value of the input
+    setSearch(e.target.value);
   }
 
   return (
@@ -27,7 +34,12 @@ const App= () => {
       <form className="search-form">
         <input 
           className="search-bar" 
-          type="text"/>
+          type="text"
+          //ingreso de datos en input
+          value={search}
+          //metodo para poder buscar
+          onChange={updateSearch}
+          />
         <button 
           className="search-button" 
           type="submit">Buscar
